@@ -1,0 +1,26 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import cars from "../../../assets/cars.json";
+
+const cylinders = [...new Set(cars.map((car) => car.cylinders))].sort((a, b) => a - b);
+---
+
+<Layout title="Automobiles par cylindres">
+  <section class="page-intro">
+    <p class="eyebrow">{cars.length} automobiles</p>
+    <h1>Nombre de <em>cylindres</em></h1>
+    <p>Choisissez une catégorie pour comparer les automobiles correspondantes.</p>
+  </section>
+  <section class="species-grid species-directory" aria-label="Nombre de cylindres">
+    {cylinders.map((item, index) => {
+      const count = cars.filter((car) => car.cylinders === item).length;
+      return (
+        <article class={`species-card species-${index % 3}`}>
+          <span class="species-number">{String(count).padStart(3, "0")} voitures</span>
+          <h3>{item} cylindres</h3>
+          <a class="card-link" href={`/cars/cylinders/${item}/`}>Voir les graphiques →</a>
+        </article>
+      );
+    })}
+  </section>
+</Layout>

@@ -1,9 +1,54 @@
 ---
-import * as Plot from "@observablehq/plot";
 import { JSDOM } from "jsdom";
-const { options } = Astro.props;
+import penguins from "../assets/penguins.json";
 
-const plot = Plot.plot({ ...options, document: new JSDOM("").window.document });
+const { species, category = "species", value, type = "mass", options = {} } = Astro.props;
+const data = value
+  ? penguins.filter((penguin) => penguin[category] === value)
+  : species
+    ? penguins.filter((penguin) => penguin.species === species)
+    : penguins;
+const dom = new JSDOM("<!doctype html><html><body></body></html>");
+globalThis.document = dom.window.document;
+const Plot = await import("@observablehq/plot");
+
+const chartDefaults = {
+  mass: {
+    x: "culmen_length_mm",
+    y: "body_mass_g",
+    xLabel: "Longueur du bec (mm)",
+    yLabel: "Masse corporelle (g)",
+  },
+  flipper: {
+    x: "sex",
+    y: "body_mass_g",
+    xLabel: "Sexe",
+    yLabel: "Masse corporelle (g)",
+  },
+  bill: {
+    x: "island",
+    y: "count",
+    xLabel: "Île",
+    yLabel: "Nombre de manchots",
+  },
+};
+const chartType = chartDefaults[type as keyof typeof chartDefaults] ?? chartDefaults.mass;
+const boxCategory = category === "sex" ? "species" : "sex";
+const xLabel = type === "flipper" && category === "sex" ? "Espèce" : chartType.xLabel;
+const marks = options.marks ?? (type === "flipper"
+  ? [Plot.boxY(data, { x: boxCategory, y: "body_mass_g", fill: boxCategory })]
+  : type === "bill"
+    ? [Plot.barY(data, Plot.groupX({ y: "count" }, { x: "island", fill: "island" }))]
+    : [Plot.dot(data, { x: "culmen_length_mm", y: "body_mass_g", fill: "sex", title: d => `${d.island} (${d.sex})` })]);
+
+const chart = Plot.plot({
+  ...options,
+  document: dom.window.document,
+  marks,
+  x: options.x ?? { label: xLabel, grid: true },
+  y: options.y ?? { label: chartType.yLabel, grid: true },
+  color: options.color ?? { legend: true }
+});
 ---
 
-<div set:html={plot.outerHTML} />
+<div class="plot-frame" set:html={chart.outerHTML}></div>

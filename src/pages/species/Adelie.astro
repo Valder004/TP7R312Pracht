@@ -1,0 +1,13 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import PlotFigure from "../../components/PlotFigure.astro";
+---
+
+<Layout title="Adelie">
+  <header class="species-heading species-coral"><span>01</span><h1>Adelie</h1></header>
+  <section class="species-charts">
+    <article class="chart-card"><h2>Bec et masse</h2><PlotFigure species="Adelie" type="mass" /></article>
+    <article class="chart-card"><h2>Distribution de la masse</h2><PlotFigure species="Adelie" type="flipper" /></article>
+    <article class="chart-card"><h2>Observations par île</h2><PlotFigure species="Adelie" type="bill" /></article>
+  </section>
+</Layout>

@@ -1,0 +1,15 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import PlotCachalot from "../../components/PlotCachalot.astro";
+import cachalots from "../../assets/cachalots.json";
+---
+
+<Layout title="Cachalots">
+  <header class="species-heading species-gold"><span>05</span><h1>Cachalots</h1></header>
+  <section class="orca-summary"><strong>{cachalots.length}</strong><span>individus</span></section>
+  <section class="species-charts orca-charts">
+    <article class="chart-card"><h2>Taille et poids</h2><PlotCachalot type="size" /></article>
+    <article class="chart-card"><h2>Âge et profondeur</h2><PlotCachalot type="depth" /></article>
+    <article class="chart-card"><h2>Poids par individu</h2><PlotCachalot type="weight" /></article>
+  </section>
+</Layout>

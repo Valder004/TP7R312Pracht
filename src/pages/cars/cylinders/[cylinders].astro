@@ -1,0 +1,25 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import PlotCars from "../../../components/PlotCars.astro";
+import cars from "../../../assets/cars.json";
+
+export function getStaticPaths() {
+  const cylinders = [...new Set(cars.map((car) => car.cylinders))];
+  return cylinders.map((item) => ({ params: { cylinders: String(item) } }));
+}
+
+const cylinders = Astro.params.cylinders;
+const count = cars.filter((car) => car.cylinders === Number(cylinders)).length;
+---
+
+<Layout title={`Automobiles ${cylinders} cylindres`}>
+  <header class="page-intro">
+    <p class="eyebrow">{count} voitures</p>
+    <h1><em>{cylinders} cylindres</em></h1>
+    <p><a class="text-link" href="/cars/cylinders/">← Tous les nombres de cylindres</a></p>
+  </header>
+  <section class="species-charts">
+    <article class="chart-card"><h2>Consommation et poids</h2><PlotCars cylinders={cylinders} /></article>
+    <article class="chart-card"><h2>Cylindrée et puissance</h2><PlotCars cylinders={cylinders} type="performance" /></article>
+  </section>
+</Layout>

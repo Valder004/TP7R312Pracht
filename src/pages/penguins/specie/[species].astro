@@ -1,0 +1,26 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import PlotFigure from "../../../components/PlotFigure.astro";
+import penguins from "../../../assets/penguins.json";
+
+export function getStaticPaths() {
+  const species = [...new Set(penguins.map((penguin) => penguin.species))];
+  return species.map((item) => ({ params: { species: item } }));
+}
+
+const species = Astro.params.species;
+const data = penguins.filter((penguin) => penguin.species === species);
+---
+
+<Layout title={`Manchots ${species}`}>
+  <header class="page-intro">
+    <p class="eyebrow">{String(data.length).padStart(3, "0")} observations</p>
+    <h1><em>{species}</em></h1>
+    <p><a class="text-link" href="/penguins/specie/">← Toutes les espèces</a></p>
+  </header>
+  <section class="species-charts">
+    <article class="chart-card"><h2>Bec et masse corporelle</h2><PlotFigure category="species" value={species} type="mass" /></article>
+    <article class="chart-card"><h2>Distribution de la masse par sexe</h2><PlotFigure category="species" value={species} type="flipper" /></article>
+    <article class="chart-card"><h2>Observations par île</h2><PlotFigure category="species" value={species} type="bill" /></article>
+  </section>
+</Layout>

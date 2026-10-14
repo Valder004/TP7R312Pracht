@@ -1,0 +1,129 @@
+---
+// TP GéoJSON/Plot — version côté client avec 3 SELECT (Période, Sexe, Âge)
+import Layout from "../layouts/Layout.astro";
+import populationMain from "../assets/populationMain.json";
+
+const listePeriode = [...new Set(populationMain.map((row) => row.Période))].sort(
+  (a, b) => b - a,
+);
+const listeSexe = [...new Set(populationMain.map((row) => row.Sexe))].sort((a, b) =>
+  a.localeCompare(b, "fr"),
+);
+const listeAge = [...new Set(populationMain.map((row) => row["Âge"]))].sort((a, b) =>
+  a.localeCompare(b, "fr"),
+);
+---
+
+<Layout title="GeoJSON (client)">
+  <section class="page-intro">
+    <p class="eyebrow">TP 2</p>
+    <h1>GeoJSON <em>côté client</em></h1>
+    <p>Choisissez une période, un sexe et un âge : la carte est recalculée dans le navigateur.</p>
+  </section>
+
+  <section class="experiment-section chart-card">
+    <div class="filter-grid">
+      <label class="filter-control" for="periode">
+        <span>Période</span>
+        <select id="periode">
+          {listePeriode.map((p, i) => <option value={p} selected={i === 0}>{p}</option>)}
+        </select>
+      </label>
+      <label class="filter-control" for="sexe">
+        <span>Sexe</span>
+        <select id="sexe">
+          {listeSexe.map((s) => <option value={s} selected={s === "Total"}>{s}</option>)}
+        </select>
+      </label>
+      <label class="filter-control" for="age">
+        <span>Âge</span>
+        <select id="age">
+          {listeAge.map((a) => <option value={a} selected={a === "Total"}>{a}</option>)}
+        </select>
+      </label>
+    </div>
+    <p id="carte-description" class="section-note">Population par département. Les valeurs détaillées sont disponibles au survol ou au clavier.</p>
+    <div class="plot-frame" id="carte" role="region" aria-label="Carte de la population par département" aria-describedby="carte-description"></div>
+    <p id="carte-etat" role="status" aria-live="polite"></p>
+  </section>
+</Layout>
+
+<script>
+  import * as Plot from "@observablehq/plot";
+  import populationUrl from "../assets/populationMain.json?url";
+  import departementsUrl from "../assets/departements.geojson.json?url";
+  import { getDepartmentPopulation } from "../utils/population";
+  import type { PopulationRow } from "../utils/population";
+
+  const elmYear = document.querySelector<HTMLSelectElement>("#periode");
+  const elmSex = document.querySelector<HTMLSelectElement>("#sexe");
+  const elmAge = document.querySelector<HTMLSelectElement>("#age");
+  const carte = document.querySelector<HTMLElement>("#carte");
+  const etatCarte = document.querySelector<HTMLElement>("#carte-etat");
+
+  if (!elmYear || !elmSex || !elmAge || !carte || !etatCarte) {
+    throw new Error("Les filtres ou les conteneurs de la carte GeoJSON sont introuvables.");
+  }
+
+  const formatPopulation = (value: number | undefined) =>
+    value === undefined ? "donnée indisponible" : `${value.toLocaleString("fr-FR")} habitants`;
+
+  async function chargerJson<T>(url: string, nom: string): Promise<T> {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Impossible de charger ${nom} : réponse HTTP ${response.status}.`);
+    }
+    return (await response.json()) as T;
+  }
+
+  async function initialiserCarte() {
+    type Departements = typeof import("../assets/departements.geojson.json");
+    const [populationMain, departements] = await Promise.all([
+      chargerJson<PopulationRow[]>(populationUrl, "les données de population"),
+      chargerJson<Departements>(departementsUrl, "les contours des départements"),
+    ]);
+
+    function afficherCarte() {
+      const selectedYear = Number(elmYear.value);
+      const selectedSex = elmSex.value;
+      const selectedAge = elmAge.value;
+      const population = getDepartmentPopulation(
+        populationMain,
+        selectedYear,
+        selectedSex,
+        selectedAge,
+      );
+
+      const plot = Plot.plot({
+        title: `Population par département en ${selectedYear}`,
+        subtitle: `${selectedSex}, ${selectedAge.trim().toLocaleLowerCase("fr")}`,
+        caption: "Source : populationMain.json. Les départements sans valeur sont indiqués en gris.",
+        ariaLabel: `Carte de la population par département en ${selectedYear}, ${selectedSex}, ${selectedAge}`,
+        projection: { type: "mercator", domain: departements },
+        color: { type: "quantize", n: 7, scheme: "blues", legend: true, label: "Habitants" },
+        marks: [
+          Plot.geo(departements, { fill: "#eee", stroke: "white" }),
+          Plot.geo(departements, {
+            fill: (feature) => population.get(feature.properties.nom),
+            stroke: "white",
+            title: (feature) =>
+              `${feature.properties.nom} : ${formatPopulation(population.get(feature.properties.nom))}`,
+          }),
+        ],
+      });
+
+      carte.replaceChildren(plot);
+      etatCarte.textContent = `Carte mise à jour : ${selectedYear}, ${selectedSex}, ${selectedAge.trim()}.`;
+    }
+
+    [elmYear, elmSex, elmAge].forEach((select) =>
+      select.addEventListener("change", afficherCarte),
+    );
+    afficherCarte();
+  }
+
+  initialiserCarte().catch((error: unknown) => {
+    console.error("Erreur au chargement de la carte GeoJSON.", error);
+    etatCarte.textContent = "La carte n’a pas pu être chargée. Veuillez actualiser la page.";
+  });
+</script>

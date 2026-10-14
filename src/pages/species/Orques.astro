@@ -1,0 +1,14 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import PlotOrca from "../../components/PlotOrca.astro";
+import orcas from "../../assets/orques.json";
+---
+
+<Layout title="Orques">
+	<header class="species-heading species-blue"><span>04</span><h1>Orques</h1></header>
+	<section class="orca-summary"><strong>{orcas.length}</strong><span>individus</span></section>
+	<section class="species-charts orca-charts">
+		<article class="chart-card"><h2>Taille et poids</h2><PlotOrca type="size" /></article>
+		<article class="chart-card"><h2>Poids par individu</h2><PlotOrca type="weight" /></article>
+	</section>
+</Layout>

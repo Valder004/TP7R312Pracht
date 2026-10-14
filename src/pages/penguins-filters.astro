@@ -1,0 +1,13 @@
+---
+import Layout from "../layouts/Layout.astro";
+import ClientPlot from "../components/ClientPlot.astro";
+---
+
+<Layout title="Penguin avec plusieurs filtres">
+  <section class="page-intro">
+    <p class="eyebrow">Essai 04</p>
+    <h1>Trois <em>filtres</em></h1>
+    <p>Combinez une espèce, une île et un sexe pour mettre à jour les données affichées.</p>
+  </section>
+  <section class="experiment-section chart-card"><ClientPlot mode="filters" /></section>
+</Layout>

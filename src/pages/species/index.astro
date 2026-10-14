@@ -1,0 +1,48 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import PlotFigure from "../../components/PlotFigure.astro";
+import penguins from "../../assets/penguins.json";
+const species = [...new Set(penguins.map((penguin) => penguin.species))];
+const colors = ["coral", "gold", "blue"];
+---
+
+<Layout title="Les espèces">
+  <h1>Espèces</h1>
+  <label class="species-menu-label" for="species-anchor">Aller à une espèce</label>
+  <select id="species-anchor" class="species-menu border-(--line)! bg-(--cream)!" aria-label="Navigation entre les espèces">
+    {species.map((item) => <option value={item.toLowerCase()}>{item}</option>)}
+  </select>
+  <div class="species-slider" aria-label="Graphiques des espèces">
+    <div class="species-list" id="species-slider" tabindex="0">
+      <div class="species-slider-track">
+    {species.map((item, index) => {
+      const data = penguins.filter((penguin) => penguin.species === item);
+      return <article id={item.toLowerCase()} class={`item species-row ${colors[index % colors.length]}`}><div class="species-row-copy"><span class="row-count">{String(data.length).padStart(3, "0")} observations</span><h2>{item}</h2><a class="text-link" href={`/penguins/specie/${item}/`}>Page graphique</a></div><PlotFigure species={item} /></article>;
+    })}
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  const speciesSelect = document.querySelector<HTMLSelectElement>("#species-anchor");
+  const items = document.querySelectorAll(".item");
+
+  speciesSelect?.addEventListener("change", (evt) => {
+    const value = (evt.target as HTMLSelectElement).value;
+    location.hash = value;
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      const id = entry.target.getAttribute("id");
+      const selectedSpecies = document.querySelector<HTMLOptionElement>(`#species-anchor option[value="${id}"]`);
+      if (entry.isIntersecting) {
+        if (!speciesSelect || !selectedSpecies) return;
+        speciesSelect.value = selectedSpecies.value;
+      }
+    });
+  }, { threshold: 0.5 });
+
+  items.forEach((item) => observer.observe(item));
+</script>

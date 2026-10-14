@@ -1,0 +1,27 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import penguins from "../../../assets/penguins.json";
+
+const sexes = [...new Set(penguins.map((penguin) => penguin.sex))]
+  .filter((sex): sex is string => typeof sex === "string" && sex.length > 0);
+---
+
+<Layout title="Sexes des manchots">
+  <section class="page-intro">
+    <p class="eyebrow">Données des manchots</p>
+    <h1>Les <em>sexes</em></h1>
+    <p>Choisissez une catégorie pour consulter les graphiques des observations correspondantes.</p>
+  </section>
+  <section class="species-grid species-directory" aria-label="Liste des sexes">
+    {sexes.map((item, index) => {
+      const count = penguins.filter((penguin) => penguin.sex === item).length;
+      return (
+        <article class={`species-card species-${index % 3}`}>
+          <span class="species-number">{String(count).padStart(3, "0")} observations</span>
+          <h3>{item}</h3>
+          <a class="card-link" href={`/penguins/sex/${item}/`}>Voir les graphiques →</a>
+        </article>
+      );
+    })}
+  </section>
+</Layout>

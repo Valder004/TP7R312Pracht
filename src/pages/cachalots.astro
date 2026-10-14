@@ -1,0 +1,45 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PlotCachalot from "../components/PlotCachalot.astro";
+import cachalots from "../assets/cachalots.json";
+
+const pods = [...new Set(cachalots.map((cachalot) => cachalot.pod))];
+const oceans = [...new Set(cachalots.map((cachalot) => cachalot.ocean))];
+const averageLength = cachalots.reduce((sum, cachalot) => sum + cachalot.length_m, 0) / cachalots.length;
+const deepestDive = Math.max(...cachalots.map((cachalot) => cachalot.depth_record_m));
+---
+
+<Layout title="Cachalots">
+  <section class="theme-hero theme-hero-cetaceans">
+    <p class="eyebrow">Vue d’ensemble · Cétacés</p>
+    <h1>À la rencontre des <em>cachalots</em></h1>
+    <p>Explorez les mensurations, l’âge et les records de plongée de ces grands plongeurs des océans.</p>
+    <a class="button" href="/species/Cachalots/">Voir la fiche détaillée →</a>
+  </section>
+
+  <section class="theme-metrics" aria-label="Chiffres clés des cachalots">
+    <article><strong>{cachalots.length}</strong><span>individus</span></article>
+    <article><strong>{pods.length}</strong><span>groupes</span></article>
+    <article><strong>{oceans.length}</strong><span>régions océaniques</span></article>
+    <article><strong>{deepestDive.toLocaleString("fr-FR")} m</strong><span>plongée la plus profonde</span></article>
+  </section>
+
+  <section class="theme-section" aria-labelledby="cachalot-charts-title">
+    <div class="section-heading">
+      <div><p class="eyebrow">Aperçu des observations</p><h2 id="cachalot-charts-title">Gabarit et plongées</h2></div>
+      <p class="section-note">Longueur moyenne : {averageLength.toFixed(1)} m</p>
+    </div>
+    <div class="species-charts theme-chart-grid">
+      <article class="chart-card"><h2>Longueur et poids</h2><PlotCachalot type="size" /></article>
+      <article class="chart-card"><h2>Âge et profondeur record</h2><PlotCachalot type="depth" /></article>
+      <article class="chart-card"><h2>Poids par individu</h2><PlotCachalot type="weight" /></article>
+    </div>
+  </section>
+
+  <section class="theme-section" aria-labelledby="cachalot-more-title">
+    <div class="section-heading"><div><p class="eyebrow">Dans le même thème</p><h2 id="cachalot-more-title">Explorer les cétacés</h2></div></div>
+    <div class="theme-link-grid theme-link-grid-single">
+      <a href="/orques/"><strong>Les orques</strong><span>Comparer leur taille et leur poids selon le sexe et le groupe.</span><b>Découvrir les orques →</b></a>
+    </div>
+  </section>
+</Layout>

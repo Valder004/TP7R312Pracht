@@ -1,0 +1,36 @@
+---
+import { JSDOM } from "jsdom";
+import cachalots from "../assets/cachalots.json";
+
+const { type = "size" } = Astro.props;
+const dom = new JSDOM("<!doctype html><html><body></body></html>");
+globalThis.document = dom.window.document;
+const Plot = await import("@observablehq/plot");
+
+const chart = type === "depth"
+  ? Plot.plot({
+      document: dom.window.document,
+      x: { label: "Âge (ans)", grid: true },
+      y: { label: "Profondeur record (m)", grid: true },
+      color: { legend: true },
+      marks: [Plot.dot(cachalots, { x: "age", y: "depth_record_m", fill: "status", r: 6, title: d => `${d.name} · ${d.ocean}` })],
+    })
+  : type === "weight"
+    ? Plot.plot({
+        document: dom.window.document,
+        marginLeft: 65,
+        x: { label: "Cachalot", tickRotate: -45 },
+        y: { label: "Poids (kg)", grid: true },
+        color: { legend: true },
+        marks: [Plot.barY(cachalots, { x: "name", y: "weight_kg", fill: "sex", title: d => `${d.pod} · ${d.ocean}` }), Plot.ruleY([0])],
+      })
+    : Plot.plot({
+        document: dom.window.document,
+        x: { label: "Longueur (m)", grid: true },
+        y: { label: "Poids (kg)", grid: true },
+        color: { legend: true },
+        marks: [Plot.dot(cachalots, { x: "length_m", y: "weight_kg", fill: "sex", r: 6, title: d => `${d.name} · ${d.status}` })],
+      });
+---
+
+<div class="plot-frame" set:html={chart.outerHTML}></div>

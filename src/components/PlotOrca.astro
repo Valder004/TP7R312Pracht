@@ -1,0 +1,29 @@
+---
+import { JSDOM } from "jsdom";
+import orcas from "../assets/orques.json";
+
+const { type = "size" } = Astro.props;
+const dom = new JSDOM("<!doctype html><html><body></body></html>");
+globalThis.document = dom.window.document;
+const Plot = await import("@observablehq/plot");
+
+const chart = type === "weight"
+  ? Plot.plot({
+      document: dom.window.document,
+      marginLeft: 65,
+      x: { label: "Orque", tickRotate: -25 },
+      y: { label: "Poids (kg)", grid: true },
+      color: { legend: true },
+      marks: [Plot.barY(orcas, { x: "name", y: "weight_kg", fill: "sex", title: d => `${d.pod} · ${d.region}` }), Plot.ruleY([0])],
+    })
+  : Plot.plot({
+      document: dom.window.document,
+      marginLeft: 65,
+      x: { label: "Longueur (m)", grid: true },
+      y: { label: "Poids (kg)", grid: true },
+      color: { legend: true },
+      marks: [Plot.dot(orcas, { x: "length_m", y: "weight_kg", fill: "sex", r: 7, title: d => `${d.name} · ${d.pod}` })],
+    });
+---
+
+<div class="plot-frame" set:html={chart.outerHTML}></div>

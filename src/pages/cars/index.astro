@@ -1,0 +1,41 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import PlotCars from "../../components/PlotCars.astro";
+import cars from "../../assets/cars.json";
+
+const cylinders = [...new Set(cars.map((car) => car.cylinders))].sort((a, b) => a - b);
+const economyValues = cars.map((car) => car["economy (mpg)"]).filter(Number.isFinite);
+const averageEconomy = economyValues.reduce((sum, value) => sum + value, 0) / economyValues.length;
+const years = cars.map((car) => car.year);
+---
+
+<Layout title="Automobiles">
+  <section class="theme-hero theme-hero-cars">
+    <p class="eyebrow">Vue d’ensemble · Jeu de données automobiles</p>
+    <h1>Comparer les <em>automobiles</em></h1>
+    <p>Explorez les caractéristiques de voitures produites entre {Math.min(...years)} et {Math.max(...years)} : consommation, poids, cylindrée et puissance.</p>
+    <a class="button" href="/cars/cylinders/">Explorer par cylindres →</a>
+  </section>
+
+  <section class="theme-metrics" aria-label="Chiffres clés des automobiles">
+    <article><strong>{cars.length}</strong><span>voitures</span></article>
+    <article><strong>{cylinders.length}</strong><span>configurations de cylindres</span></article>
+    <article><strong>{averageEconomy.toFixed(1)}</strong><span>mpg en moyenne</span></article>
+    <article><strong>{Math.min(...years)}–{Math.max(...years)}</strong><span>années de production</span></article>
+  </section>
+
+  <section class="theme-section" aria-labelledby="cars-charts-title">
+    <div class="section-heading"><div><p class="eyebrow">Aperçu des caractéristiques</p><h2 id="cars-charts-title">Consommation, poids et puissance</h2></div></div>
+    <div class="species-charts theme-chart-grid">
+      <article class="chart-card"><h2>Consommation et poids</h2><PlotCars /></article>
+      <article class="chart-card"><h2>Cylindrée et puissance</h2><PlotCars type="performance" /></article>
+    </div>
+  </section>
+
+  <section class="theme-section" aria-labelledby="cars-explore-title">
+    <div class="section-heading"><div><p class="eyebrow">Pour aller plus loin</p><h2 id="cars-explore-title">Comparer par nombre de cylindres</h2></div></div>
+    <div class="theme-link-grid theme-link-grid-single">
+      <a href="/cars/cylinders/"><strong>Explorer les configurations</strong><span>Comparez les voitures regroupées selon leurs {cylinders.join(", ")} cylindres.</span><b>Voir toutes les catégories →</b></a>
+    </div>
+  </section>
+</Layout>

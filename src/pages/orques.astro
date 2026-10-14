@@ -1,0 +1,44 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PlotOrca from "../components/PlotOrca.astro";
+import orcas from "../assets/orques.json";
+
+const pods = [...new Set(orcas.map((orca) => orca.pod))];
+const regions = [...new Set(orcas.map((orca) => orca.region))];
+const averageLength = orcas.reduce((sum, orca) => sum + orca.length_m, 0) / orcas.length;
+const averageWeight = Math.round(orcas.reduce((sum, orca) => sum + orca.weight_kg, 0) / orcas.length);
+---
+
+<Layout title="Orques">
+  <section class="theme-hero theme-hero-orcas">
+    <p class="eyebrow">Vue d’ensemble · Cétacés</p>
+    <h1>Découvrir les <em>orques</em></h1>
+    <p>Comparez les mensurations des individus et parcourez les groupes observés dans différentes régions.</p>
+    <a class="button" href="/species/Orques/">Voir la fiche détaillée →</a>
+  </section>
+
+  <section class="theme-metrics" aria-label="Chiffres clés des orques">
+    <article><strong>{orcas.length}</strong><span>individus</span></article>
+    <article><strong>{pods.length}</strong><span>groupes</span></article>
+    <article><strong>{regions.length}</strong><span>régions</span></article>
+    <article><strong>{averageLength.toFixed(1)} m</strong><span>longueur moyenne</span></article>
+  </section>
+
+  <section class="theme-section" aria-labelledby="orca-charts-title">
+    <div class="section-heading">
+      <div><p class="eyebrow">Aperçu des observations</p><h2 id="orca-charts-title">Taille et poids</h2></div>
+      <p class="section-note">Poids moyen : {averageWeight.toLocaleString("fr-FR")} kg</p>
+    </div>
+    <div class="species-charts theme-chart-grid">
+      <article class="chart-card"><h2>Longueur et poids</h2><PlotOrca type="size" /></article>
+      <article class="chart-card"><h2>Poids par individu</h2><PlotOrca type="weight" /></article>
+    </div>
+  </section>
+
+  <section class="theme-section" aria-labelledby="orca-more-title">
+    <div class="section-heading"><div><p class="eyebrow">Dans le même thème</p><h2 id="orca-more-title">Explorer les cétacés</h2></div></div>
+    <div class="theme-link-grid theme-link-grid-single">
+      <a href="/cachalots/"><strong>Les cachalots</strong><span>Découvrir leurs mensurations et leurs plongées record.</span><b>Découvrir les cachalots →</b></a>
+    </div>
+  </section>
+</Layout>

@@ -1,26 +1,92 @@
 ---
 import "../styles/global.css";
----
+import penguins from "../assets/penguins.json";
+const { title = "TP2 Penguins" } = Astro.props;
+const species = [...new Set(penguins.map((penguin) => penguin.species))];
+const currentPath = Astro.url.pathname;
+const activeTheme = currentPath.startsWith("/penguins") ||
+  currentPath === "/species/" ||
+  currentPath === "/species-tabs/" ||
+  (currentPath.startsWith("/species/") && !["/species/Orques/", "/species/Cachalots/"].includes(currentPath))
+  ? "penguins"
+  : currentPath.startsWith("/cars")
+    ? "cars"
+    : currentPath === "/cachalots/" || currentPath === "/orques/" || ["/species/Orques/", "/species/Cachalots/"].includes(currentPath)
+      ? "cetaceans"
+      : currentPath === "/simple/" || currentPath === "/accessibilite/"
+        ? "examples"
+        : ["/leaflet/", "/geojson/", "/geojson-client/"].includes(currentPath)
+          ? "maps"
+          : "";
 
+---
 <!doctype html>
-<html lang="en">
+<html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
-    <title>Astro Basics</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>{title} | TP3 Penguins</title>
   </head>
   <body>
-    <slot />
+    <header class="site-header">
+      <a class="brand" href="/">TP3 <span>Data</span></a>
+      <nav class="main-navigation" aria-label="Navigation principale">
+        <div class="theme-switcher" aria-label="Choisir un thème">
+          <a class:list={["theme-link", { "is-selected": activeTheme === "penguins" }]} href="/penguins/" aria-current={activeTheme === "penguins" ? "true" : undefined}>Manchots</a>
+          <a class:list={["theme-link", { "is-selected": activeTheme === "cars" }]} href="/cars/" aria-current={activeTheme === "cars" ? "true" : undefined}>Automobiles</a>
+          <a class:list={["theme-link", { "is-selected": activeTheme === "cetaceans" }]} href="/cachalots/" aria-current={activeTheme === "cetaceans" ? "true" : undefined}>Cétacés</a>
+          <a class:list={["theme-link", { "is-selected": activeTheme === "maps" }]} href="/leaflet/" aria-current={activeTheme === "maps" ? "true" : undefined}>Cartes</a>
+          <a class:list={["theme-link", { "is-selected": activeTheme === "examples" }]} href="/simple/" aria-current={activeTheme === "examples" ? "true" : undefined}>Exemples</a>
+          <a class:list={["theme-link", { "is-selected": currentPath === "/" }]} href="/" aria-current={currentPath === "/" ? "page" : undefined}>Accueil</a>
+        </div>
+        {activeTheme === "penguins" && (
+          <div class="theme-page-links" aria-label="Pages sur les manchots">
+            <a href="/penguins/" aria-current={currentPath === "/penguins/" ? "page" : undefined}>Vue d’ensemble</a>
+            <a href="/penguins-filter/" aria-current={currentPath === "/penguins-filter/" ? "page" : undefined}>Filtrer par espèce</a>
+            <a href="/penguins-filters/" aria-current={currentPath === "/penguins-filters/" ? "page" : undefined}>Filtres combinés</a>
+            <a href="/species/" aria-current={currentPath === "/species/" ? "page" : undefined}>Défilement</a>
+            <a href="/species-tabs/" aria-current={currentPath === "/species-tabs/" ? "page" : undefined}>Onglets</a>
+            <a href="/penguins/specie/" aria-current={currentPath.startsWith("/penguins/specie") ? "page" : undefined}>Espèces</a>
+            {species.map((item) => <a class="theme-page-subitem" href={`/penguins/specie/${item}/`} aria-current={currentPath === `/penguins/specie/${item}/` ? "page" : undefined}>{item}</a>)}
+            <a href="/penguins/island/" aria-current={currentPath.startsWith("/penguins/island") ? "page" : undefined}>Îles</a>
+            <a href="/penguins/sex/" aria-current={currentPath.startsWith("/penguins/sex") ? "page" : undefined}>Sexes</a>
+          </div>
+        )}
+        {activeTheme === "cars" && (
+          <div class="theme-page-links" aria-label="Pages sur les automobiles">
+            <a href="/cars/" aria-current={currentPath === "/cars/" ? "page" : undefined}>Vue d’ensemble</a>
+            <a href="/cars/cylinders/" aria-current={currentPath.startsWith("/cars/cylinders") ? "page" : undefined}>Par nombre de cylindres</a>
+          </div>
+        )}
+        {activeTheme === "cetaceans" && (
+          <div class="theme-page-links" aria-label="Pages sur les cétacés">
+            <a href="/cachalots/" aria-current={currentPath === "/cachalots/" ? "page" : undefined}>Graphiques des cachalots</a>
+            <a href="/orques/" aria-current={currentPath === "/orques/" ? "page" : undefined}>Vue d’ensemble des orques</a>
+            <a href="/species/Cachalots/" aria-current={currentPath === "/species/Cachalots/" ? "page" : undefined}>Fiche des cachalots</a>
+            <a href="/species/Orques/" aria-current={currentPath === "/species/Orques/" ? "page" : undefined}>Orques</a>
+          </div>
+        )}
+        {activeTheme === "examples" && (
+          <div class="theme-page-links" aria-label="Pages exemples">
+            <a href="/simple/" aria-current={currentPath === "/simple/" ? "page" : undefined}>Graphique simple</a>
+            <a href="/accessibilite/" aria-current={currentPath === "/accessibilite/" ? "page" : undefined}>Accessibilité</a>
+          </div>
+        )}
+        {activeTheme === "maps" && (
+          <div class="theme-page-links" aria-label="Pages cartographiques">
+            <a href="/leaflet/" aria-current={currentPath === "/leaflet/" ? "page" : undefined}>Établissements (Leaflet)</a>
+            <a href="/geojson/" aria-current={currentPath === "/geojson/" ? "page" : undefined}>Population (serveur)</a>
+            <a href="/geojson-client/" aria-current={currentPath === "/geojson-client/" ? "page" : undefined}>Population (client)</a>
+          </div>
+        )}
+        {activeTheme === "" && currentPath === "/" && (
+          <p class="theme-menu-hint">Choisissez un thème ci-dessous pour afficher ses pages dans le menu.</p>
+        )}
+      </nav>
+    </header>
+    <main><slot /></main>
+    <footer>TP3 R312</footer>
   </body>
 </html>
-
-<style>
-  html,
-  body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-  }
-</style>

@@ -1,0 +1,13 @@
+---
+import Layout from "../layouts/Layout.astro";
+import ClientPlot from "../components/ClientPlot.astro";
+---
+
+<Layout title="Simple">
+  <section class="page-intro">
+    <p class="eyebrow">Essai 01</p>
+    <h1>Plot <em>simple</em></h1>
+    <p>Le graphique aléatoire de la documentation Observable Plot, rendu dans le navigateur.</p>
+  </section>
+  <section class="experiment-section chart-card"><ClientPlot mode="random" /></section>
+</Layout>

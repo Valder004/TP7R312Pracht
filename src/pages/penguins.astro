@@ -1,0 +1,46 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PlotFigure from "../components/PlotFigure.astro";
+import penguins from "../assets/penguins.json";
+
+const species = [...new Set(penguins.map((penguin) => penguin.species))];
+const islands = [...new Set(penguins.map((penguin) => penguin.island))];
+const sexes = [...new Set(penguins.map((penguin) => penguin.sex).filter(Boolean))];
+const averageMass = Math.round(
+  penguins.reduce((total, penguin) => total + penguin.body_mass_g, 0) / penguins.length,
+);
+---
+
+<Layout title="Manchots">
+  <section class="theme-hero theme-hero-penguins">
+    <p class="eyebrow">Vue d’ensemble · Jeu de données Palmer</p>
+    <h1>Observer les <em>manchots</em></h1>
+    <p>Comparez les mesures physiques des manchots, leurs espèces et les îles où ils ont été observés.</p>
+    <a class="button" href="/penguins/specie/">Explorer les espèces →</a>
+  </section>
+
+  <section class="theme-metrics" aria-label="Chiffres clés des manchots">
+    <article><strong>{penguins.length}</strong><span>observations</span></article>
+    <article><strong>{species.length}</strong><span>espèces</span></article>
+    <article><strong>{islands.length}</strong><span>îles</span></article>
+    <article><strong>{sexes.length}</strong><span>catégories de sexe</span></article>
+  </section>
+
+  <section class="theme-section" aria-labelledby="penguin-chart-title">
+    <div class="section-heading">
+      <div><p class="eyebrow">Aperçu des mesures</p><h2 id="penguin-chart-title">Taille du bec et masse corporelle</h2></div>
+      <p class="section-note">Masse moyenne : {averageMass.toLocaleString("fr-FR")} g</p>
+    </div>
+    <article class="chart-card"><PlotFigure /></article>
+  </section>
+
+  <section class="theme-section" aria-labelledby="penguin-explore-title">
+    <div class="section-heading"><div><p class="eyebrow">Choisir un angle</p><h2 id="penguin-explore-title">Explorer les données</h2></div></div>
+    <div class="theme-link-grid">
+      <a href="/penguins/specie/"><strong>Espèces</strong><span>Comparer Adelie, Chinstrap et Gentoo</span><b>Voir les espèces →</b></a>
+      <a href="/penguins/island/"><strong>Îles</strong><span>Découvrir les observations par île</span><b>Voir les îles →</b></a>
+      <a href="/penguins/sex/"><strong>Sexes</strong><span>Comparer les mesures par sexe</span><b>Voir les catégories →</b></a>
+      <a href="/penguins-filters/"><strong>Filtres combinés</strong><span>Choisir une espèce, une île et un sexe</span><b>Filtrer les données →</b></a>
+    </div>
+  </section>
+</Layout>

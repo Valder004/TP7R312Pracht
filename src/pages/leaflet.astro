@@ -1,0 +1,58 @@
+---
+// Import des styles CSS de Leaflet pour l'affichage de la carte
+import "leaflet/dist/leaflet.css";
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Leaflet">
+  <section class="page-intro">
+    <p class="eyebrow">TP 1</p>
+    <h1>Carte des <em>établissements</em></h1>
+    <p>Carte interactive Leaflet : sélectionnez un marqueur pour consulter un établissement. La carte peut aussi être parcourue au clavier.</p>
+  </section>
+
+  <div id="map" style="height: 600px;" role="region" aria-label="Carte interactive des établissements universitaires"></div>
+</Layout>
+
+<script>
+  import listeEtablissements from "../assets/listeEtablissements.json";
+
+  // Import de la bibliothèque Leaflet pour créer la carte interactive
+  import L from "leaflet";
+  // Avec Vite, les images des marqueurs par défaut doivent être importées explicitement
+  import markerIcon from "leaflet/dist/images/marker-icon.png?url";
+  import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png?url";
+  import markerShadow from "leaflet/dist/images/marker-shadow.png?url";
+
+  L.Marker.prototype.options.icon = L.icon({
+    iconUrl: markerIcon,
+    iconRetinaUrl: markerIcon2x,
+    shadowUrl: markerShadow,
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41],
+  });
+
+  // Dans l'élément d'ID "map" : création de la carte centrée sur la France (lat: 46.6033, lon: 1.883) avec un zoom niveau 6
+  const map = L.map("map", { keyboard: true }).setView([46.6033, 1.883], 6);
+
+  // Fond de carte OpenStreetMap (https://leafletjs.com/examples/quick-start/)
+  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  }).addTo(map);
+
+  // Un marqueur + une popup par établissement
+  listeEtablissements.forEach((etablissement) => {
+    const popupContent = document.createElement("strong");
+    popupContent.textContent = etablissement.name;
+
+    L.marker([etablissement.lat, etablissement.lon], {
+      title: etablissement.name,
+      alt: etablissement.name,
+    })
+      .addTo(map)
+      .bindPopup(popupContent);
+  });
+</script>

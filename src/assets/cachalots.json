@@ -1,0 +1,30 @@
+[
+  { "name": "Sperm Alpha", "pod": "C1", "ocean": "Atlantique Nord", "length_m": 16.5, "weight_kg": 35000, "sex": "male", "depth_record_m": 2200, "age": 32, "status": "dominant" },
+  { "name": "Sperm Beta", "pod": "C1", "ocean": "Pacifique Sud", "length_m": 14.2, "weight_kg": 28000, "sex": "female", "depth_record_m": 1800, "age": 27, "status": "subordinate" },
+  { "name": "Sperm Gamma", "pod": "C2", "ocean": "Océan Indien", "length_m": 17.1, "weight_kg": 40000, "sex": "male", "depth_record_m": 2400, "age": 41, "status": "dominant" },
+  { "name": "Sperm Delta", "pod": "C2", "ocean": "Atlantique Sud", "length_m": 13.8, "weight_kg": 26000, "sex": "female", "depth_record_m": 1700, "age": 22, "status": "subordinate" },
+  { "name": "Sperm Epsilon", "pod": "C3", "ocean": "Pacifique Nord", "length_m": 18.0, "weight_kg": 45000, "sex": "male", "depth_record_m": 2500, "age": 45, "status": "dominant" },
+
+  { "name": "Sperm Zeta", "pod": "C3", "ocean": "Pacifique Nord", "length_m": 15.4, "weight_kg": 31000, "sex": "female", "depth_record_m": 1900, "age": 29, "status": "subordinate" },
+  { "name": "Sperm Eta", "pod": "C4", "ocean": "Océan Indien", "length_m": 17.8, "weight_kg": 42000, "sex": "male", "depth_record_m": 2300, "age": 38, "status": "dominant" },
+  { "name": "Sperm Theta", "pod": "C4", "ocean": "Atlantique Nord", "length_m": 14.9, "weight_kg": 29000, "sex": "female", "depth_record_m": 1750, "age": 25, "status": "subordinate" },
+  { "name": "Sperm Iota", "pod": "C5", "ocean": "Pacifique Sud", "length_m": 16.2, "weight_kg": 34000, "sex": "male", "depth_record_m": 2100, "age": 33, "status": "dominant" },
+  { "name": "Sperm Kappa", "pod": "C5", "ocean": "Pacifique Sud", "length_m": 13.5, "weight_kg": 25000, "sex": "female", "depth_record_m": 1600, "age": 21, "status": "subordinate" },
+
+  { "name": "Sperm Lambda", "pod": "C6", "ocean": "Atlantique Sud", "length_m": 17.3, "weight_kg": 41000, "sex": "male", "depth_record_m": 2350, "age": 40, "status": "dominant" },
+  { "name": "Sperm Mu", "pod": "C6", "ocean": "Atlantique Sud", "length_m": 14.1, "weight_kg": 27000, "sex": "female", "depth_record_m": 1650, "age": 26, "status": "subordinate" },
+  { "name": "Sperm Nu", "pod": "C7", "ocean": "Arctique", "length_m": 18.4, "weight_kg": 46000, "sex": "male", "depth_record_m": 2550, "age": 47, "status": "dominant" },
+  { "name": "Sperm Xi", "pod": "C7", "ocean": "Arctique", "length_m": 15.0, "weight_kg": 30000, "sex": "female", "depth_record_m": 1850, "age": 30, "status": "subordinate" },
+  { "name": "Sperm Omicron", "pod": "C8", "ocean": "Océan Indien", "length_m": 16.9, "weight_kg": 39000, "sex": "male", "depth_record_m": 2250, "age": 36, "status": "dominant" },
+
+  { "name": "Sperm Pi", "pod": "C8", "ocean": "Océan Indien", "length_m": 14.7, "weight_kg": 28500, "sex": "female", "depth_record_m": 1700, "age": 24, "status": "subordinate" },
+  { "name": "Sperm Rho", "pod": "C9", "ocean": "Pacifique Nord", "length_m": 17.6, "weight_kg": 43000, "sex": "male", "depth_record_m": 2400, "age": 42, "status": "dominant" },
+  { "name": "Sperm Sigma", "pod": "C9", "ocean": "Pacifique Nord", "length_m": 15.2, "weight_kg": 31000, "sex": "female", "depth_record_m": 1800, "age": 28, "status": "subordinate" },
+  { "name": "Sperm Tau", "pod": "C10", "ocean": "Atlantique Nord", "length_m": 16.7, "weight_kg": 36000, "sex": "male", "depth_record_m": 2150, "age": 34, "status": "dominant" },
+  { "name": "Sperm Upsilon", "pod": "C10", "ocean": "Atlantique Nord", "length_m": 13.9, "weight_kg": 26500, "sex": "female", "depth_record_m": 1650, "age": 23, "status": "subordinate" },
+
+  { "name": "Sperm Phi", "pod": "C11", "ocean": "Pacifique Sud", "length_m": 17.9, "weight_kg": 44000, "sex": "male", "depth_record_m": 2450, "age": 39, "status": "dominant" },
+  { "name": "Sperm Chi", "pod": "C11", "ocean": "Pacifique Sud", "length_m": 14.4, "weight_kg": 27500, "sex": "female", "depth_record_m": 1750, "age": 27, "status": "subordinate" },
+  { "name": "Sperm Psi", "pod": "C12", "ocean": "Atlantique Sud", "length_m": 18.2, "weight_kg": 45500, "sex": "male", "depth_record_m": 2500, "age": 46, "status": "dominant" },
+  { "name": "Sperm Omega", "pod": "C12", "ocean": "Atlantique Sud", "length_m": 15.3, "weight_kg": 32000, "sex": "female", "depth_record_m": 1850, "age": 29, "status": "subordinate" }
+]

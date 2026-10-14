@@ -1,0 +1,59 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Accessibilité">
+  <section class="page-intro">
+    <p class="eyebrow">TP 0</p>
+    <h1>Accessibilité <em>(a11y)</em></h1>
+    <p>Un graphique doit être compréhensible sans dépendre uniquement de sa représentation visuelle. Comparez les deux associations entre graphiques et légendes.</p>
+  </section>
+
+  <section class="experiment-section chart-card">
+    <div class="plot-frame" id="plot-a11y"></div>
+  </section>
+
+  <section class="experiment-section chart-card">
+    <figure>
+      <div class="plot-frame" id="plot-a11y-manuel"></div>
+      <figcaption>Figure 2. Le même graphique, avec une figure et une légende rédigées dans la page.</figcaption>
+    </figure>
+  </section>
+
+  <section class="experiment-section chart-card" aria-labelledby="verification-title">
+    <h2 id="verification-title">Vérifier l’accessibilité</h2>
+    <p>Dans les outils de développement de Chrome, lancez l’audit Lighthouse puis ouvrez l’arborescence d’accessibilité pour vérifier le nom et le rôle exposés pour chaque graphique.</p>
+    <p>
+      <a href="https://developer.chrome.com/docs/devtools/accessibility/reference?hl=fr#audits">Audit Lighthouse</a>
+      ·
+      <a href="https://developer.chrome.com/docs/devtools/accessibility/reference?hl=fr#explore-tree">Arborescence de l’accessibilité</a>
+    </p>
+  </section>
+</Layout>
+
+<script>
+  import * as Plot from "@observablehq/plot";
+
+  const plot = Plot.plot({
+    // Opt. Construit une figure/figcaption.
+    title: "Des graphiques compréhensibles",
+    subtitle: "Un titre et une légende donnent le contexte des données",
+    caption: "Figure 1. Un graphique accompagné de son titre, de son sous-titre et de sa légende.",
+    // Sur le svg lui-même
+    ariaLabel: "Graphique rappelant que les titres et légendes facilitent la compréhension",
+    marks: [
+      Plot.frame(),
+      Plot.text(["Les titres, sous-titres et légendes aident à comprendre ce qui est important."], { lineWidth: 30, frameAnchor: "middle" }),
+    ],
+  });
+  document.getElementById("plot-a11y")?.append(plot);
+
+  const plotManuel = Plot.plot({
+    ariaLabel: "Graphique rappelant le rôle des titres et légendes dans l’interprétation des données",
+    marks: [
+      Plot.frame(),
+      Plot.text(["Un intitulé informatif évite au lecteur de devoir deviner le message du graphique."], { lineWidth: 30, frameAnchor: "middle" }),
+    ],
+  });
+  document.getElementById("plot-a11y-manuel")?.append(plotManuel);
+</script>

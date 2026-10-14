@@ -1,0 +1,104 @@
+---
+const { mode = "random" } = Astro.props;
+const id = `client-plot-${mode}`;
+---
+
+<div class="client-experiment" data-plot-mode={mode}>
+  {mode === "species" && (
+    <label class="filter-control" for={`${id}-species`}>
+      <span>Espèce</span>
+      <select id={`${id}-species`}>
+        <option value="">Toutes les espèces</option>
+        <option value="Adelie">Adelie</option>
+        <option value="Chinstrap">Chinstrap</option>
+        <option value="Gentoo">Gentoo</option>
+      </select>
+    </label>
+  )}
+  {mode === "filters" && (
+    <div class="filter-grid">
+      <label class="filter-control" for={`${id}-species`}>
+        <span>Espèce</span>
+        <select id={`${id}-species`}>
+          <option value="">Toutes les espèces</option>
+          <option value="Adelie">Adelie</option>
+          <option value="Chinstrap">Chinstrap</option>
+          <option value="Gentoo">Gentoo</option>
+        </select>
+      </label>
+      <label class="filter-control" for={`${id}-island`}>
+        <span>Île</span>
+        <select id={`${id}-island`}>
+          <option value="">Toutes les îles</option>
+          <option value="Biscoe">Biscoe</option>
+          <option value="Dream">Dream</option>
+          <option value="Torgersen">Torgersen</option>
+        </select>
+      </label>
+      <label class="filter-control" for={`${id}-sex`}>
+        <span>Sexe</span>
+        <select id={`${id}-sex`}>
+          <option value="">Tous les sexes</option>
+          <option value="MALE">MALE</option>
+          <option value="FEMALE">FEMALE</option>
+        </select>
+      </label>
+    </div>
+  )}
+  <p class="plot-result" id={`${id}-count`} aria-live="polite"></p>
+  <div class="plot-frame" id={id}></div>
+</div>
+
+<script>
+  import * as Plot from "@observablehq/plot";
+  import penguins from "../assets/penguins.json";
+  import cachalots from "../assets/cachalots.json";
+
+  const roots = document.querySelectorAll<HTMLElement>("[data-plot-mode]");
+
+  roots.forEach((root) => {
+    const mode = root.dataset.plotMode;
+    const plotContainer = root.querySelector<HTMLElement>(".plot-frame");
+    const count = root.querySelector<HTMLElement>(".plot-result");
+    const selects = Array.from(root.querySelectorAll<HTMLSelectElement>("select"));
+
+    if (!plotContainer) return;
+
+    function renderPlot() {
+      const values = Object.fromEntries(selects.map((select) => [select.id.split("-").pop(), select.value])) as Record<string, string>;
+      const filteredPenguins = penguins.filter((penguin) =>
+        (!values.species || penguin.species === values.species) &&
+        (!values.island || penguin.island === values.island) &&
+        (!values.sex || penguin.sex === values.sex)
+      );
+
+      plotContainer.innerHTML = "";
+      const plot = mode === "random"
+        ? Plot.plot({
+            y: { grid: true, label: "Valeur" },
+            marks: [Plot.barY(Array.from({ length: 20 }, (_, index) => ({ index, value: Math.random() })), { x: "index", y: "value", fill: "#e87562" })],
+          })
+        : mode === "cachalots"
+          ? Plot.plot({
+              grid: true,
+              x: { label: "Longueur (m)" },
+              y: { label: "Poids (kg)" },
+              color: { legend: true },
+              marks: [Plot.dot(cachalots, { x: "length_m", y: "weight_kg", fill: "sex", title: "name" })],
+            })
+          : Plot.plot({
+            grid: true,
+            x: { label: "Longueur du bec (mm)" },
+            y: { label: "Profondeur du bec (mm)" },
+            color: { legend: true },
+            marks: [Plot.dot(filteredPenguins, { x: "culmen_length_mm", y: "culmen_depth_mm", stroke: "species", title: "species" })],
+            });
+
+      plotContainer.append(plot);
+      if (count) count.innerText = `${mode === "cachalots" ? cachalots.length : filteredPenguins.length} observations`;
+    }
+
+    selects.forEach((select) => select.addEventListener("change", renderPlot));
+    renderPlot();
+  });
+</script>

@@ -1,0 +1,48 @@
+---
+// TP GéoJSON/Plot — version côté serveur (le SVG est généré au build avec JSDOM)
+import { JSDOM } from "jsdom";
+import Layout from "../layouts/Layout.astro";
+import populationMain from "../assets/populationMain.json";
+import departements from "../assets/departements.geojson.json";
+import { getDepartmentPopulation } from "../utils/population";
+
+const dom = new JSDOM("<!doctype html><html><body></body></html>");
+globalThis.document = dom.window.document;
+const Plot = await import("@observablehq/plot");
+
+const periode = Math.max(...populationMain.map((row) => row.Période));
+const sexe = "Total";
+const age = "Total";
+const population = getDepartmentPopulation(populationMain, periode, sexe, age);
+const formatPopulation = (value: number | undefined) =>
+  value === undefined ? "donnée indisponible" : `${value.toLocaleString("fr-FR")} habitants`;
+
+const chart = Plot.plot({
+  document: dom.window.document,
+  title: `Population par département en ${periode}`,
+  subtitle: `Ensemble de la population, tous âges`,
+  caption: "Source : populationMain.json. Les départements sans valeur sont indiqués en gris.",
+  ariaLabel: `Carte de la population totale par département en ${periode}`,
+  projection: { type: "mercator", domain: departements },
+  color: { type: "quantize", n: 7, scheme: "blues", legend: true, label: "Population" },
+  marks: [
+    Plot.geo(departements, { fill: "#eee", stroke: "white" }),
+    Plot.geo(departements, {
+      fill: (d) => population.get(d.properties.nom),
+      stroke: "white",
+      title: (d) => `${d.properties.nom} : ${formatPopulation(population.get(d.properties.nom))}`,
+    }),
+  ],
+});
+---
+
+<Layout title="GeoJSON (serveur)">
+  <section class="page-intro">
+    <p class="eyebrow">TP 2</p>
+    <h1>GeoJSON <em>côté serveur</em></h1>
+    <p>Carte générée par Observable Plot au moment du build. Elle présente la population totale par département en {periode}.</p>
+  </section>
+  <section class="experiment-section chart-card">
+    <div class="plot-frame" set:html={chart.outerHTML}></div>
+  </section>
+</Layout>

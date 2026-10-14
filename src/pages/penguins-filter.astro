@@ -1,0 +1,13 @@
+---
+import Layout from "../layouts/Layout.astro";
+import ClientPlot from "../components/ClientPlot.astro";
+---
+
+<Layout title="Penguin avec filtre">
+  <section class="page-intro">
+    <p class="eyebrow">Essai 03</p>
+    <h1>Filtrer les <em>manchots</em></h1>
+    <p>La valeur du select est lue à chaque changement pour recalculer le graphique.</p>
+  </section>
+  <section class="experiment-section chart-card"><ClientPlot mode="species" /></section>
+</Layout>

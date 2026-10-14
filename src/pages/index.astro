@@ -1,21 +1,80 @@
 ---
 import PlotFigure from "../components/PlotFigure.astro";
 import Layout from "../layouts/Layout.astro";
-import * as Plot from "@observablehq/plot";
 import penguins from "../assets/penguins.json";
+import cars from "../assets/cars.json";
+import cachalots from "../assets/cachalots.json";
+import orcas from "../assets/orques.json";
+
+const speciesCount = new Set(penguins.map((penguin) => penguin.species)).size;
+const islandCount = new Set(penguins.map((penguin) => penguin.island)).size;
 ---
 
-<Layout>
-  <h1 class="text-2xl">Test Astro et Plot (Observablehq)</h1>
-  <PlotFigure
-    options={{
-      marks: [
-        Plot.dot(penguins, {
-          x: "culmen_length_mm",
-          y: "culmen_depth_mm",
-          stroke: "species",
-        }),
-      ],
-    }}
-  />
+<Layout title="Accueil">
+  <section class="home-banner">
+    <div>
+      <span class="home-kicker">Explorer les données</span>
+      <h1>TP3 <em>Data</em></h1>
+      <p class="home-intro">Un aperçu des jeux de données et des graphiques interactifs du site.</p>
+    </div>
+    <div class="home-count"><strong>{penguins.length + cars.length + cachalots.length + orcas.length}</strong><span>observations au total</span></div>
+  </section>
+
+  <section class="home-overview" aria-labelledby="overview-title">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Le contenu du site</p>
+        <h2 id="overview-title">Quatre jeux de données</h2>
+      </div>
+      <p class="section-note">Choisissez un thème pour commencer l’exploration.</p>
+    </div>
+    <div class="overview-grid">
+      <a class="overview-card overview-penguins" href="/penguins/">
+        <span class="overview-count">{penguins.length} observations</span>
+        <h3>Manchots</h3>
+        <p>{speciesCount} espèces réparties sur {islandCount} îles, comparées selon leurs mesures et leur sexe.</p>
+        <span class="overview-cta">Explorer le thème <span aria-hidden="true">→</span></span>
+      </a>
+      <a class="overview-card overview-cars" href="/cars/">
+        <span class="overview-count">{cars.length} voitures</span>
+        <h3>Automobiles</h3>
+        <p>Consommation, poids, cylindrée et puissance; les comparaisons peuvent être filtrées par cylindres.</p>
+        <span class="overview-cta">Explorer le thème <span aria-hidden="true">→</span></span>
+      </a>
+      <a class="overview-card overview-whales" href="/cachalots/">
+        <span class="overview-count">{cachalots.length} individus</span>
+        <h3>Cachalots</h3>
+        <p>Explorez la longueur, le poids, l’âge et les plongées des cachalots.</p>
+        <span class="overview-cta">Explorer le thème <span aria-hidden="true">→</span></span>
+      </a>
+      <a class="overview-card overview-orcas" href="/orques/">
+        <span class="overview-count">{orcas.length} individus</span>
+        <h3>Orques</h3>
+        <p>Comparez la taille et le poids des orques selon leur groupe et leur région.</p>
+        <span class="overview-cta">Explorer le thème <span aria-hidden="true">→</span></span>
+      </a>
+    </div>
+  </section>
+
+  <section class="home-exploration" aria-labelledby="exploration-title">
+    <div>
+      <p class="eyebrow">Différentes façons d’explorer</p>
+      <h2 id="exploration-title">Filtrer et comparer</h2>
+      <p>Les pages des manchots proposent des graphiques complets, des filtres simples ou combinés et plusieurs présentations pour comparer les espèces.</p>
+    </div>
+    <div class="exploration-links">
+      <a href="/penguins-filter/"><span>01</span><strong>Filtrer par espèce</strong><span>Afficher un groupe</span></a>
+      <a href="/penguins-filters/"><span>02</span><strong>Combiner les filtres</strong><span>Espèce, île et sexe</span></a>
+      <a href="/species/"><span>03</span><strong>Défilement des graphiques</strong><span>Comparer les espèces</span></a>
+      <a href="/species-tabs/"><span>04</span><strong>Onglets accessibles</strong><span>Navigation au clavier</span></a>
+    </div>
+  </section>
+
+  <section class="home-chart-section" aria-labelledby="chart-title">
+    <div class="section-heading">
+      <div><p class="eyebrow">Pour commencer</p><h2 id="chart-title">Les mesures des manchots</h2></div>
+      <a class="text-link" href="/penguins/">Tous les graphiques →</a>
+    </div>
+    <div class="home-chart chart-card"><PlotFigure /></div>
+  </section>
 </Layout>

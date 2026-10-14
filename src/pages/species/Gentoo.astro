@@ -1,0 +1,15 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import PlotFigure from "../../components/PlotFigure.astro";
+---
+
+<Layout title="Gentoo">
+  <header class="species-heading species-gold"><span>02</span><h1>Gentoo</h1></header>
+  <section class="species-charts">
+    <article class="chart-card"><h2>Bec et masse</h2><PlotFigure species="Gentoo" type="mass" /></article>
+    <article class="chart-card"><h2>Distribution de la masse</h2><PlotFigure species="Gentoo" type="flipper" /></article>
+    <article class="chart-card"><h2>Observations par île</h2><PlotFigure species="Gentoo" type="bill" /></article>
+  </section>
+</Layout>
+
+

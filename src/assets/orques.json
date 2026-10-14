@@ -1,0 +1,7 @@
+[
+  { "name": "Orca Alpha", "pod": "A1", "length_m": 7.2, "weight_kg": 5400, "region": "Pacifique Nord", "sex": "male" },
+  { "name": "Orca Beta", "pod": "A2", "length_m": 6.8, "weight_kg": 4800, "region": "Antarctique", "sex": "female" },
+  { "name": "Orca Gamma", "pod": "B1", "length_m": 7.5, "weight_kg": 5600, "region": "Atlantique Nord", "sex": "male" },
+  { "name": "Orca Delta", "pod": "B2", "length_m": 6.9, "weight_kg": 5000, "region": "Pacifique Sud", "sex": "female" },
+  { "name": "Orca Epsilon", "pod": "C1", "length_m": 8.0, "weight_kg": 6000, "region": "Arctique", "sex": "male" }
+]

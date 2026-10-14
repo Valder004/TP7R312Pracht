@@ -1,0 +1,94 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PlotFigure from "../components/PlotFigure.astro";
+import penguins from "../assets/penguins.json";
+
+const species = [...new Set(penguins.map((penguin) => penguin.species))];
+const colors = ["coral", "gold", "blue"];
+---
+
+<Layout title="Onglets accessibles">
+  <header class="page-intro">
+    <p class="eyebrow">Navigation accessible</p>
+    <h1>Les <em>espèces</em></h1>
+    <p>La même sélection de graphiques, présentée avec des onglets accessibles au clavier.</p>
+  </header>
+
+  <section class="species-tabs" aria-labelledby="tabs-title">
+    <div class="section-heading">
+      <h2 id="tabs-title">Comparer les espèces</h2>
+      <p class="section-note">{penguins.length} observations</p>
+    </div>
+
+    <div class="tabs-shell border! border-(--line)! bg-(--cream)!">
+      <div class="tabs-list" role="tablist" aria-label="Choisir une espèce">
+        {species.map((item, index) => (
+          <button
+            id={`tab-${item.toLowerCase()}`}
+            class="tab-button border-0! border-b-2! border-transparent! bg-transparent! px-5! py-4! font-sans! text-xs! uppercase! tracking-[.12em]! aria-selected:border-(--coral)! aria-selected:text-(--coral)!"
+            type="button"
+            role="tab"
+            aria-selected={index === 0 ? "true" : "false"}
+            aria-controls={`panel-${item.toLowerCase()}`}
+            tabindex={index === 0 ? "0" : "-1"}
+            data-tab={item.toLowerCase()}
+          >
+            {item}
+          </button>
+        ))}
+      </div>
+
+      {species.map((item, index) => {
+        const data = penguins.filter((penguin) => penguin.species === item);
+        const id = item.toLowerCase();
+        return (
+          <article
+            id={`panel-${id}`}
+            class={`tab-panel species-row ${colors[index % colors.length]}`}
+            role="tabpanel"
+            aria-labelledby={`tab-${id}`}
+            tabindex="0"
+            hidden={index !== 0}
+            data-panel={id}
+          >
+            <div class="species-row-copy">
+              <span class="row-count">{String(data.length).padStart(3, "0")} observations</span>
+              <h2>{item}</h2>
+              <a class="text-link" href={`/penguins/specie/${item}/`}>Page graphique</a>
+            </div>
+            <PlotFigure species={item} />
+          </article>
+        );
+      })}
+    </div>
+  </section>
+</Layout>
+
+<script>
+  const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>("[role='tab']"));
+  const panels = Array.from(document.querySelectorAll<HTMLElement>("[role='tabpanel']"));
+
+  const selectTab = (tab: HTMLButtonElement) => {
+    tabs.forEach((item) => {
+      const selected = item === tab;
+      item.setAttribute("aria-selected", String(selected));
+      item.tabIndex = selected ? 0 : -1;
+    });
+
+    panels.forEach((panel) => {
+      panel.hidden = panel.getAttribute("aria-labelledby") !== tab.id;
+    });
+  };
+
+  tabs.forEach((tab, index) => {
+    tab.addEventListener("click", () => selectTab(tab));
+    tab.addEventListener("keydown", (event) => {
+      if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+      event.preventDefault();
+      const direction = event.key === "ArrowRight" ? 1 : -1;
+      const nextIndex = (index + direction + tabs.length) % tabs.length;
+      tabs[nextIndex].focus();
+      selectTab(tabs[nextIndex]);
+    });
+  });
+</script>

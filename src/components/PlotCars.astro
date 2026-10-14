@@ -1,0 +1,30 @@
+---
+import { JSDOM } from "jsdom";
+import cars from "../assets/cars.json";
+
+const { cylinders, type = "efficiency" } = Astro.props;
+const data = cylinders === undefined
+  ? cars
+  : cars.filter((car) => car.cylinders === Number(cylinders));
+const dom = new JSDOM("<!doctype html><html><body></body></html>");
+globalThis.document = dom.window.document;
+const Plot = await import("@observablehq/plot");
+
+const chart = type === "performance"
+  ? Plot.plot({
+      document: dom.window.document,
+      x: { label: "Cylindrée (cc)", grid: true },
+      y: { label: "Puissance (hp)", grid: true },
+      color: { type: "ordinal", legend: true },
+      marks: [Plot.dot(data, { x: "displacement (cc)", y: "power (hp)", fill: "cylinders", r: 5, title: "name" })],
+    })
+  : Plot.plot({
+      document: dom.window.document,
+      x: { label: "Consommation (mpg)", grid: true },
+      y: { label: "Poids (lb)", grid: true },
+      color: { type: "ordinal", legend: true },
+      marks: [Plot.dot(data, { x: "economy (mpg)", y: "weight (lb)", fill: "cylinders", r: 5, title: "name" })],
+    });
+---
+
+<div class="plot-frame" set:html={chart.outerHTML}></div>
